@@ -12,7 +12,6 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.IPlugin;
 import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.dialect.MysqlDialect;
 import com.jfinal.plugin.activerecord.generator.DataDictionaryGenerator;
 import com.jfinal.plugin.activerecord.generator.MetaBuilder;
 import com.jfinal.plugin.activerecord.generator.TableMeta;
@@ -67,8 +66,10 @@ public class JfGenerator {
             DataSource dataSource = _JFinalDemoGenerator.getDataSource();
             
             MetaBuilder metaBuilder = new MetaBuilder(dataSource);
-            metaBuilder.setDialect(new MysqlDialect());
-            //metaBuilder.addExcludedTable(_JFinalDemoGenerator.excludedTable);
+            //设置数据库方言
+            metaBuilder.setDialect(_JFinalDemoGenerator.getDialect());
+            //排除不需要生成的表
+            metaBuilder.addExcludedTable(_JFinalDemoGenerator.excludedTable);
             List<TableMeta> tableMetas = metaBuilder.build();
             new DataGenerator(dataSource, null).rebuildColumnMetas(tableMetas);
             

@@ -1,9 +1,12 @@
 package com.demo.common.model;
 
 import javax.sql.DataSource;
+
 import com.demo.common.DemoConfig;
 import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
+import com.jfinal.plugin.activerecord.dialect.Dialect;
+import com.jfinal.plugin.activerecord.dialect.SqlServerDialect;
 import com.jfinal.plugin.activerecord.generator.Generator;
 import com.jfinal.plugin.druid.DruidPlugin;
 
@@ -15,11 +18,17 @@ import com.jfinal.plugin.druid.DruidPlugin;
  */
 public class _JFinalDemoGenerator {
 	
+	public static String[] excludedTable = {"adv","trace_xe_action_map", "trace_xe_event_map"};
+
 	public static DataSource getDataSource() {
-		PropKit.use("a_little_config.txt");
+		PropKit.use("config.ini");
 		DruidPlugin druidPlugin = DemoConfig.createDruidPlugin();
 		druidPlugin.start();
 		return druidPlugin.getDataSource();
+	}
+	
+	public static Dialect getDialect(){
+		return new SqlServerDialect();
 	}
 	
 	public static void main(String[] args) {
@@ -35,10 +44,12 @@ public class _JFinalDemoGenerator {
 		
 		// 创建生成器
 		Generator generator = new Generator(getDataSource(), baseModelPackageName, baseModelOutputDir, modelPackageName, modelOutputDir);
+		//设置数据库方言,sqlserver
+		generator.setDialect(getDialect());
 		// 设置是否生成链式 setter 方法
 		generator.setGenerateChainSetter(false);
 		// 添加不需要生成的表名
-		generator.addExcludedTable("adv");
+		generator.addExcludedTable(excludedTable);
 		// 设置是否在 Model 中生成 dao 对象
 		generator.setGenerateDaoInModel(true);
 		// 设置是否生成链式 setter 方法
