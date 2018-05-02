@@ -15,6 +15,7 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
+import com.quartz.QuartzPlugin;
 
 /**
  * 本 demo 仅表达最为粗浅的 jfinal 用法，更为有价值的实用的企业级用法
@@ -48,7 +49,7 @@ public class DemoConfig extends JFinalConfig {
 	 */
 	public void configConstant(Constants me) {
 		// 加载少量必要配置，随后可用PropKit.get(...)获取值
-		PropKit.use("a_little_config.txt");
+		PropKit.use("config.ini");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 	}
 	
@@ -79,6 +80,13 @@ public class DemoConfig extends JFinalConfig {
 		// 所有映射在 MappingKit 中自动化搞定
 		_MappingKit.mapping(arp);
 		me.add(arp);
+		
+		
+		//定时器插件
+		QuartzPlugin qp = new QuartzPlugin();
+		me.add(qp);
+		
+		
 	}
 	
 	public static DruidPlugin createDruidPlugin() {
